@@ -1,0 +1,100 @@
+name: Bounty XP Tracker and Leaderboard Updater
+
+on:
+  issues:
+    types: [closed, labeled]
+  pull_request:
+    types: [closed, synchronize, labeled]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  update-xp:
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' && (github.event.action == 'closed' || github.event.action == 'labeled')) ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Update XP tracker via GitHub API
+        id: xp
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
+          EVENT_TYPE: ${{ github.event_name }}
+          EVENT_ACTION: ${{ github.event.action }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || github.event.pull_request.number || 0 }}
+          PR_MERGED: ${{ github.event.pull_request.merged || false }}
+          ISSUE_LABELS: ${{ join(github.event.issue.labels.*.name, ',') }}
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+          TARGET_BRANCH: ${{ github.ref_name || 'main' }}
+        run: |
+          python .github/scripts/update_xp_tracker_api.py \
+            --token "$GITHUB_TOKEN" \
+            --repo "$GITHUB_REPOSITORY" \
+            --actor "$ACTOR" \
+            --event-type "$EVENT_TYPE" \
+            --event-action "$EVENT_ACTION" \
+            --issue-number "$ISSUE_NUMBER" \
+            --labels "$ISSUE_LABELS,$PR_LABELS" \
+            --pr-merged "$PR_MERGED" \
+            --branch "$TARGET_BRANCH" \
+            --tracker-path "bounties/XP_TRACKER.md" \
+            > xp_result.json
+
+          cat xp_result.json
+
+          echo "awarded_xp=$(python -c \"import json;print(json.load(open('xp_result.json'))['awarded_xp'])\")" >> "$GITHUB_OUTPUT"
+          echo "total_xp=$(python -c \"import json;print(json.load(open('xp_result.json'))['total_xp'])\")" >> "$GITHUB_OUTPUT"
+          echo "level=$(python -c \"import json;print(json.load(open('xp_result.json'))['level'])\")" >> "$GITHUB_OUTPUT"
+          echo "title=$(python -c \"import json;print(json.load(open('xp_result.json'))['title'])\")" >> "$GITHUB_OUTPUT"
+          echo "reason=$(python -c \"import json;print(json.load(open('xp_result.json'))['reason'])\")" >> "$GITHUB_OUTPUT"
+
+      - name: Comment XP update on issue
+        if: ${{ github.event_name == 'issues' && github.event.issue.number }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            🏆 XP update processed for @${{ github.actor }}
+
+            - Awarded: `+${{ steps.xp.outputs.awarded_xp }} XP`
+            - Reason: `${{ steps.xp.outputs.reason }}`
+            - New total: `${{ steps.xp.outputs.total_xp }} XP`
+            - Level: `${{ steps.xp.outputs.level }} - ${{ steps.xp.outputs.title }}`
+
+            Tracker: `bounties/XP_TRACKER.md`
+
+      - name: Comment XP update on PR
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            🏆 XP update processed for @${{ github.actor }}
+
+            - Awarded: `+${{ steps.xp.outputs.awarded_xp }} XP`
+            - Reason: `${{ steps.xp.outputs.reason }}`
+            - New total: `${{ steps.xp.outputs.total_xp }} XP`
+            - Level: `${{ steps.xp.outputs.level }} - ${{ steps.xp.outputs.title }}`
+
+            Tracker: `bounties/XP_TRACKER.md`
