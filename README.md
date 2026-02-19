@@ -67,6 +67,17 @@ curl -sk "https://50.28.86.131/wallet/balance?miner_id=YOUR_WALLET_ID"
 | Major | 50-200 RTC | Architecture work, new subsystems |
 | Critical | 200-500 RTC | Security hardening, consensus changes |
 
+## Bounty Hygiene
+
+To keep bounties safe and reviewable, this repo enforces supply-chain and disclosure hygiene:
+
+- target repo/ref + acceptance criteria required in bounty issue
+- dependency/artifact changes require pinning + SHA/checksum evidence
+- no blind install patterns (`curl | bash`) in bounty instructions
+- security bounties must follow safe-harbor/disclosure policy in `SECURITY.md`
+
+Reference: `docs/BOUNTY_HYGIENE.md`
+
 ## Claiming a Bounty
 
 Comment on the bounty issue with:
