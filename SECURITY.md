@@ -87,6 +87,7 @@ Bonuses may be granted for clear reproducibility, exploit reliability, and patch
 - Bounty payouts are offered in project-native tokens unless explicitly stated otherwise.
 - No token price, market value, liquidity, convertibility, or future appreciation is guaranteed.
 - Participation in this open-source program is not an investment contract and does not create ownership rights.
+- Funding/utility position reference: `docs/UTILITY_COIN_POSITION.md`
 - Rewards are recognition for accepted security work: respect earned through contribution.
 
 ## Prohibited Conduct

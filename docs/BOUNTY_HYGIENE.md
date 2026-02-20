@@ -50,6 +50,7 @@ For red-team/security bounties:
 This project uses RTC-native payouts.
 
 - no ICO claims and no guaranteed token value/liquidity
+- utility coin and funding disclosure: `docs/UTILITY_COIN_POSITION.md`
 - reward is for accepted shipped work
 - payout queue/confirmation is logged in public ledger issue
 - high-value bounties may use staged payout
