@@ -260,3 +260,11 @@ python3 scripts/node_miner_weekly_scan.py --expected-miners-file expected_miners
 ```
 
 Docs: `docs/NODE_MINER_WEEKLY_SCAN.md`
+
+Bundled baseline: `expected_miners.txt`
+
+24h follow-up issue helper:
+```bash
+./scripts/post_issue374_followup.sh 374 --dry-run
+./scripts/post_issue374_followup.sh 374
+```

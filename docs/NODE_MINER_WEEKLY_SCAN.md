@@ -61,3 +61,25 @@ Any expected miner not visible in the public miner API is listed under **Expecte
 - TLS verification is disabled by default because the primary node currently uses self-signed certs.
 - Use `--verify-tls` once trusted certs are in place.
 - Version mismatch nodes are still payout-eligible by default, but explicitly flagged for upgrade.
+
+## Repository Baseline + 24h Follow-up Helper
+
+This repo now includes a live baseline file:
+
+- `expected_miners.txt`
+
+Use it directly:
+
+```bash
+python3 scripts/node_miner_weekly_scan.py --expected-miners-file expected_miners.txt
+```
+
+For issue `#374` 24h follow-up comments, use:
+
+```bash
+# dry run
+./scripts/post_issue374_followup.sh 374 --dry-run
+
+# post comment to GitHub issue
+./scripts/post_issue374_followup.sh 374
+```
