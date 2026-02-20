@@ -83,3 +83,6 @@ For issue `#374` 24h follow-up comments, use:
 # post comment to GitHub issue
 ./scripts/post_issue374_followup.sh 374
 ```
+
+See also:
+- `docs/NODE_HOST_PREFLIGHT_CHECKLIST.md` for host onboarding + expected outputs.

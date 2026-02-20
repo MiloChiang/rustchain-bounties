@@ -261,6 +261,8 @@ python3 scripts/node_miner_weekly_scan.py --expected-miners-file expected_miners
 
 Docs: `docs/NODE_MINER_WEEKLY_SCAN.md`
 
+Node host preflight: `docs/NODE_HOST_PREFLIGHT_CHECKLIST.md`
+
 Bundled baseline: `expected_miners.txt`
 
 24h follow-up issue helper:
