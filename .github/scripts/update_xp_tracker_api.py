@@ -458,6 +458,7 @@ def main() -> None:
     level = 1
     title = "Starting Hunter"
     unlocked: List[str] = []
+    conflict_exhausted = False
 
     message = f"chore(xp): update tracker for @{args.actor} (+{gained_xp} XP)"
 
@@ -490,9 +491,17 @@ def main() -> None:
             break
         except requests.HTTPError as exc:
             status = exc.response.status_code if exc.response is not None else None
-            if status == 409 and attempt < max_attempts:
-                continue
+            if status == 409:
+                if attempt < max_attempts:
+                    continue
+                conflict_exhausted = True
+                break
             raise
+
+    result_reason = reason
+    if conflict_exhausted:
+        result_reason = f"{reason}; commit_conflict_skipped"
+
     result = {
         "mode": "api",
         "actor": args.actor,
@@ -500,7 +509,7 @@ def main() -> None:
         "total_xp": total_xp,
         "level": level,
         "title": title,
-        "reason": reason,
+        "reason": result_reason,
         "new_badges": unlocked,
         "commit_url": commit_url,
     }
