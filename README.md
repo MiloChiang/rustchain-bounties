@@ -243,3 +243,20 @@ MIT
 
 - Claim template: [`docs/COMMUNITY_BOUNTY_CLAIM_TEMPLATE.md`](docs/COMMUNITY_BOUNTY_CLAIM_TEMPLATE.md)
 - Issue #87 acceptance packet: [`docs/ISSUE_87_MINIMAL_ACCEPTANCE_PACKET.md`](docs/ISSUE_87_MINIMAL_ACCEPTANCE_PACKET.md)
+
+## Weekly Node/Miner Scan (Maintainers)
+
+If a node host is online and active, they should be included in weekly payout review.
+Use this scanner to pull node health + miner attestation freshness and flag likely outdated miners:
+
+```bash
+python3 scripts/node_miner_weekly_scan.py
+```
+
+Include expected miner IDs to catch missing/outdated clients:
+
+```bash
+python3 scripts/node_miner_weekly_scan.py --expected-miners-file expected_miners.txt
+```
+
+Docs: `docs/NODE_MINER_WEEKLY_SCAN.md`

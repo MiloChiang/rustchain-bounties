@@ -129,3 +129,26 @@ sudo systemctl status rustchain-miner.service
 
 - You do not show up in `/api/miners`: wait a few minutes, verify the node is reachable (`/health`), and confirm you're on real hardware.
 - SSL errors: use `curl -k` / `requests(..., verify=False)` when testing against the self-signed cert.
+
+## Weekly Payout + Upgrade Scan
+
+Maintainers can run a unified node/miner scan to decide weekly payouts and catch outdated/wrong-node miners:
+
+```bash
+python3 scripts/node_miner_weekly_scan.py
+```
+
+Useful flags:
+
+```bash
+# Save machine + human reports
+python3 scripts/node_miner_weekly_scan.py \
+  --out-json reports/node_miner_scan.json \
+  --out-md reports/node_miner_scan.md
+
+# Compare against expected miner IDs (flags missing miners for outreach)
+python3 scripts/node_miner_weekly_scan.py \
+  --expected-miners-file expected_miners.txt
+```
+
+See: `docs/NODE_MINER_WEEKLY_SCAN.md`
